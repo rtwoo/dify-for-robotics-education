@@ -28,6 +28,7 @@ export type HeaderInNormalProps = {
     left?: React.ReactNode
     middle?: React.ReactNode
     chatVariableTrigger?: React.ReactNode
+    pololuSourceCodeTrigger?: React.ReactNode
   }
   runAndHistoryProps?: RunAndHistoryProps
 }
@@ -36,6 +37,7 @@ const HeaderInNormal = ({
   runAndHistoryProps,
 }: HeaderInNormalProps) => {
   const workflowStore = useWorkflowStore()
+  const isPololuProject = useStore(s => !!s.pololuMicropython?.enabled)
   const { nodesReadOnly } = useNodesReadOnly()
   const { handleNodeSelect } = useNodesInteractions()
   const setShowWorkflowVersionHistoryPanel = useStore(s => s.setShowWorkflowVersionHistoryPanel)
@@ -44,6 +46,7 @@ const HeaderInNormal = ({
   const setShowVariableInspectPanel = useStore(s => s.setShowVariableInspectPanel)
   const setShowChatVariablePanel = useStore(s => s.setShowChatVariablePanel)
   const setShowGlobalVariablePanel = useStore(s => s.setShowGlobalVariablePanel)
+  const setShowPololuMicropythonPanel = useStore(s => s.setShowPololuMicropythonPanel)
   const nodes = useNodes<StartNodeType>()
   const selectedNode = nodes.find(node => node.data.selected)
   const { handleBackupDraft } = useWorkflowRun()
@@ -61,8 +64,9 @@ const HeaderInNormal = ({
     setShowVariableInspectPanel(false)
     setShowChatVariablePanel(false)
     setShowGlobalVariablePanel(false)
+    setShowPololuMicropythonPanel?.(false)
     closeAllInputFieldPanels()
-  }, [workflowStore, handleBackupDraft, selectedNode, handleNodeSelect, setShowWorkflowVersionHistoryPanel, setShowEnvPanel, setShowDebugAndPreviewPanel, setShowVariableInspectPanel, setShowChatVariablePanel, setShowGlobalVariablePanel])
+  }, [workflowStore, handleBackupDraft, selectedNode, handleNodeSelect, setShowWorkflowVersionHistoryPanel, setShowEnvPanel, setShowDebugAndPreviewPanel, setShowVariableInspectPanel, setShowChatVariablePanel, setShowGlobalVariablePanel, setShowPololuMicropythonPanel])
 
   return (
     <div className="flex w-full items-center justify-between">
@@ -76,11 +80,12 @@ const HeaderInNormal = ({
         <OnlineUsers />
         {components?.left}
         <Divider type="vertical" className="mx-auto h-3.5" />
-        <RunAndHistory {...runAndHistoryProps} />
+        {!isPololuProject && <RunAndHistory {...runAndHistoryProps} />}
         <div className="shrink-0 cursor-pointer rounded-lg border-[0.5px] border-components-button-secondary-border bg-components-button-secondary-bg shadow-xs backdrop-blur-[10px]">
           {components?.chatVariableTrigger}
           <EnvButton disabled={nodesReadOnly} />
           <GlobalVariableButton disabled={nodesReadOnly} />
+          {components?.pololuSourceCodeTrigger}
         </div>
         {components?.middle}
         <VersionHistoryButton onClick={onStartRestoring} />

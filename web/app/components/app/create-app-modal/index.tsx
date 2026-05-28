@@ -21,6 +21,7 @@ import { useProviderContext } from '@/context/provider-context'
 import useTheme from '@/hooks/use-theme'
 import { useRouter } from '@/next/navigation'
 import { createApp } from '@/service/apps'
+import { createPololuMicropythonApp } from '@/service/pololu-micropython'
 import { AppModeEnum } from '@/types/app'
 import { getRedirection } from '@/utils/app-redirection'
 import { trackCreateApp } from '@/utils/create-app-tracking'
@@ -36,6 +37,8 @@ type CreateAppProps = {
   defaultAppMode?: AppModeEnum
 }
 
+type ProjectProfile = 'standard' | 'pololu-micropython'
+
 const shouldExpandBeginnerAppTypes = (appMode?: AppModeEnum) => {
   return appMode === AppModeEnum.CHAT || appMode === AppModeEnum.AGENT_CHAT || appMode === AppModeEnum.COMPLETION
 }
@@ -45,6 +48,7 @@ function CreateApp({ onClose, onSuccess, onCreateFromTemplate, defaultAppMode }:
   const { push } = useRouter()
 
   const [appMode, setAppMode] = useState<AppModeEnum>(defaultAppMode || AppModeEnum.ADVANCED_CHAT)
+  const [projectProfile, setProjectProfile] = useState<ProjectProfile>('standard')
   const [appIcon, setAppIcon] = useState<AppIconSelection>({ type: 'emoji', icon: '🤖', background: '#FFEAD5' })
   const [showAppIconPicker, setShowAppIconPicker] = useState(false)
   const [name, setName] = useState('')
@@ -70,14 +74,19 @@ function CreateApp({ onClose, onSuccess, onCreateFromTemplate, defaultAppMode }:
       return
     isCreatingRef.current = true
     try {
-      const app = await createApp({
+      const appPayload = {
         name,
         description,
         icon_type: appIcon.type,
         icon: appIcon.type === 'emoji' ? appIcon.icon : appIcon.fileId,
         icon_background: appIcon.type === 'emoji' ? appIcon.background : undefined,
-        mode: appMode,
-      })
+      }
+      const app = projectProfile === 'pololu-micropython'
+        ? await createPololuMicropythonApp(appPayload)
+        : await createApp({
+            ...appPayload,
+            mode: appMode,
+          })
 
       trackCreateApp({ source: 'studio_blank', appMode: app.mode })
 
@@ -91,7 +100,7 @@ function CreateApp({ onClose, onSuccess, onCreateFromTemplate, defaultAppMode }:
       toast.error(error instanceof Error ? error.message : t('newApp.appCreateFailed', { ns: 'app' }))
     }
     isCreatingRef.current = false
-  }, [name, t, appMode, appIcon, description, onSuccess, onClose, push, isCurrentWorkspaceEditor])
+  }, [name, t, appMode, appIcon, description, onSuccess, onClose, push, isCurrentWorkspaceEditor, projectProfile])
 
   const { run: handleCreateApp } = useDebounceFn(onCreate, { wait: 300 })
   useKeyPress(['meta.enter', 'ctrl.enter'], () => {
@@ -115,7 +124,7 @@ function CreateApp({ onClose, onSuccess, onCreateFromTemplate, defaultAppMode }:
               <div>
                 <div className="flex flex-row gap-2">
                   <AppTypeCard
-                    active={appMode === AppModeEnum.WORKFLOW}
+                    active={appMode === AppModeEnum.WORKFLOW && projectProfile === 'standard'}
                     title={t('types.workflow', { ns: 'app' })}
                     description={t('newApp.workflowShortDescription', { ns: 'app' })}
                     icon={(
@@ -124,11 +133,12 @@ function CreateApp({ onClose, onSuccess, onCreateFromTemplate, defaultAppMode }:
                       </div>
                     )}
                     onClick={() => {
+                      setProjectProfile('standard')
                       setAppMode(AppModeEnum.WORKFLOW)
                     }}
                   />
                   <AppTypeCard
-                    active={appMode === AppModeEnum.ADVANCED_CHAT}
+                    active={appMode === AppModeEnum.ADVANCED_CHAT && projectProfile === 'standard'}
                     title={t('types.advanced', { ns: 'app' })}
                     description={t('newApp.advancedShortDescription', { ns: 'app' })}
                     icon={(
@@ -137,7 +147,22 @@ function CreateApp({ onClose, onSuccess, onCreateFromTemplate, defaultAppMode }:
                       </div>
                     )}
                     onClick={() => {
+                      setProjectProfile('standard')
                       setAppMode(AppModeEnum.ADVANCED_CHAT)
+                    }}
+                  />
+                  <AppTypeCard
+                    active={projectProfile === 'pololu-micropython'}
+                    title={t('types.pololuMicropython', { ns: 'app' })}
+                    description={t('newApp.pololuMicropythonShortDescription', { ns: 'app' })}
+                    icon={(
+                      <div className="flex size-6 items-center justify-center rounded-md bg-components-icon-bg-teal-solid">
+                        <Logic className="size-4 text-components-avatar-shape-fill-stop-100" />
+                      </div>
+                    )}
+                    onClick={() => {
+                      setProjectProfile('pololu-micropython')
+                      setAppMode(AppModeEnum.WORKFLOW)
                     }}
                   />
                 </div>
@@ -156,7 +181,7 @@ function CreateApp({ onClose, onSuccess, onCreateFromTemplate, defaultAppMode }:
                 {isAppTypeExpanded && (
                   <div className="flex flex-row gap-2">
                     <AppTypeCard
-                      active={appMode === AppModeEnum.CHAT}
+                      active={appMode === AppModeEnum.CHAT && projectProfile === 'standard'}
                       title={t('types.chatbot', { ns: 'app' })}
                       description={t('newApp.chatbotShortDescription', { ns: 'app' })}
                       icon={(
@@ -165,11 +190,12 @@ function CreateApp({ onClose, onSuccess, onCreateFromTemplate, defaultAppMode }:
                         </div>
                       )}
                       onClick={() => {
+                        setProjectProfile('standard')
                         setAppMode(AppModeEnum.CHAT)
                       }}
                     />
                     <AppTypeCard
-                      active={appMode === AppModeEnum.AGENT_CHAT}
+                      active={appMode === AppModeEnum.AGENT_CHAT && projectProfile === 'standard'}
                       title={t('types.agent', { ns: 'app' })}
                       description={t('newApp.agentShortDescription', { ns: 'app' })}
                       icon={(
@@ -178,11 +204,12 @@ function CreateApp({ onClose, onSuccess, onCreateFromTemplate, defaultAppMode }:
                         </div>
                       )}
                       onClick={() => {
+                        setProjectProfile('standard')
                         setAppMode(AppModeEnum.AGENT_CHAT)
                       }}
                     />
                     <AppTypeCard
-                      active={appMode === AppModeEnum.COMPLETION}
+                      active={appMode === AppModeEnum.COMPLETION && projectProfile === 'standard'}
                       title={t('newApp.completeApp', { ns: 'app' })}
                       description={t('newApp.completionShortDescription', { ns: 'app' })}
                       icon={(
@@ -191,6 +218,7 @@ function CreateApp({ onClose, onSuccess, onCreateFromTemplate, defaultAppMode }:
                         </div>
                       )}
                       onClick={() => {
+                        setProjectProfile('standard')
                         setAppMode(AppModeEnum.COMPLETION)
                       }}
                     />
@@ -273,7 +301,7 @@ function CreateApp({ onClose, onSuccess, onCreateFromTemplate, defaultAppMode }:
           <div className="absolute top-0 right-0 left-0 h-6 border-b border-b-divider-subtle 2xl:h-[139px]"></div>
           <div className="max-w-[760px] border-x border-x-divider-subtle">
             <div className="h-6 2xl:h-[139px]" />
-            <AppPreview mode={appMode} />
+            <AppPreview mode={appMode} projectProfile={projectProfile} />
             <div className="absolute inset-x-0 border-b border-b-divider-subtle"></div>
             <div className="flex h-[448px] w-[664px] items-center justify-center" style={{ background: 'repeating-linear-gradient(135deg, transparent, transparent 2px, rgba(16,24,40,0.04) 4px,transparent 3px, transparent 6px)' }}>
               <AppScreenShot show={appMode === AppModeEnum.CHAT} mode={AppModeEnum.CHAT} />
@@ -335,8 +363,18 @@ function AppTypeCard({ icon, title, description, active, onClick }: AppTypeCardP
   )
 }
 
-function AppPreview({ mode }: { mode: AppModeEnum }) {
+function AppPreview({ mode, projectProfile }: { mode: AppModeEnum, projectProfile: ProjectProfile }) {
   const { t } = useTranslation()
+  if (projectProfile === 'pololu-micropython') {
+    return (
+      <div className="px-8 py-4">
+        <h4 className="system-sm-semibold-uppercase text-text-secondary">{t('types.pololuMicropython', { ns: 'app' })}</h4>
+        <div className="mt-1 min-h-8 max-w-96 system-xs-regular text-text-tertiary">
+          <span>{t('newApp.pololuMicropythonUserDescription', { ns: 'app' })}</span>
+        </div>
+      </div>
+    )
+  }
   const modeToPreviewInfoMap = {
     [AppModeEnum.CHAT]: {
       title: t('types.chatbot', { ns: 'app' }),

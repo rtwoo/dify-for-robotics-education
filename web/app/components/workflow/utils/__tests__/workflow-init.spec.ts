@@ -209,6 +209,16 @@ describe('initialNodes', () => {
     expect(result[0]!.type).toBe(CUSTOM_NODE)
   })
 
+  it('should normalize legacy start nodes without variables', () => {
+    const nodes = [
+      createNode({ id: 'start', data: { type: BlockEnum.Start, title: 'Start', desc: '' } }),
+    ]
+
+    const result = initialNodes(nodes, [])
+
+    expect(result[0]!.data).toMatchObject({ variables: [] })
+  })
+
   it('should set connected source and target handle ids', () => {
     const nodes = [
       createNode({ id: 'a', data: { type: BlockEnum.Start, title: '', desc: '' } }),

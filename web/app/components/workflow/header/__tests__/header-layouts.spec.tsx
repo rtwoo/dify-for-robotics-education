@@ -193,6 +193,7 @@ describe('Header layout components', () => {
             left: <div>left-slot</div>,
             middle: <div>middle-slot</div>,
             chatVariableTrigger: <div>chat-trigger</div>,
+            pololuSourceCodeTrigger: <div>pololu-source-trigger</div>,
           }}
         />,
         {
@@ -202,6 +203,10 @@ describe('Header layout components', () => {
             showVariableInspectPanel: true,
             showChatVariablePanel: true,
             showGlobalVariablePanel: true,
+            showPololuMicropythonPanel: true,
+            setShowPololuMicropythonPanel: (show: boolean) => {
+              store.setState({ showPololuMicropythonPanel: show })
+            },
           },
         },
       )
@@ -211,6 +216,7 @@ describe('Header layout components', () => {
       expect(screen.getByText('left-slot')).toBeInTheDocument()
       expect(screen.getByText('middle-slot')).toBeInTheDocument()
       expect(screen.getByText('chat-trigger')).toBeInTheDocument()
+      expect(screen.getByText('pololu-source-trigger')).toBeInTheDocument()
       expect(screen.getByTestId('env-button')).toHaveTextContent('true')
       expect(screen.getByTestId('global-variable-button')).toHaveTextContent('true')
       expect(mockRunAndHistory).toHaveBeenCalledTimes(1)
@@ -227,6 +233,21 @@ describe('Header layout components', () => {
       expect(store.getState().showVariableInspectPanel).toBe(false)
       expect(store.getState().showChatVariablePanel).toBe(false)
       expect(store.getState().showGlobalVariablePanel).toBe(false)
+      expect(store.getState().showPololuMicropythonPanel).toBe(false)
+    })
+
+    it('should hide run controls for Pololu MicroPython workflows', () => {
+      renderWorkflowComponent(
+        <HeaderInNormal />,
+        {
+          initialStoreState: {
+            pololuMicropython: { enabled: true },
+          },
+        },
+      )
+
+      expect(screen.queryByTestId('run-and-history')).not.toBeInTheDocument()
+      expect(mockRunAndHistory).not.toHaveBeenCalled()
     })
   })
 

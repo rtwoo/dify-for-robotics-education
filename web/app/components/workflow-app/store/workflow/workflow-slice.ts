@@ -3,6 +3,10 @@ import type { StateCreator } from 'zustand'
 export type WorkflowSliceShape = {
   appId: string
   appName: string
+  pololuMicropython?: Record<string, unknown>
+  setPololuMicropython: (pololuMicropython?: Record<string, unknown>) => void
+  showPololuMicropythonPanel: boolean
+  setShowPololuMicropythonPanel: (showPololuMicropythonPanel: boolean) => void
   notInitialWorkflow: boolean
   setNotInitialWorkflow: (notInitialWorkflow: boolean) => void
   shouldAutoOpenStartNodeSelector: boolean
@@ -20,6 +24,10 @@ export type WorkflowSliceShape = {
 export const createWorkflowSlice: StateCreator<WorkflowSliceShape> = set => ({
   appId: '',
   appName: '',
+  pololuMicropython: undefined,
+  setPololuMicropython: pololuMicropython => set(() => ({ pololuMicropython })),
+  showPololuMicropythonPanel: false,
+  setShowPololuMicropythonPanel: showPololuMicropythonPanel => set(() => ({ showPololuMicropythonPanel })),
   notInitialWorkflow: false,
   setNotInitialWorkflow: notInitialWorkflow => set(() => ({ notInitialWorkflow })),
   shouldAutoOpenStartNodeSelector: false,

@@ -6,6 +6,7 @@ import type { EnvironmentVariable } from '@/app/components/workflow/types'
 import {
   memo,
   useCallback,
+  useEffect,
   useState,
 } from 'react'
 import { useStoreApi } from 'reactflow'
@@ -24,6 +25,7 @@ import dynamic from '@/next/dynamic'
 import PluginDependency from '../../workflow/plugin-dependency'
 import { useAvailableNodesMetaData } from '../hooks'
 import { useAutoOnboarding } from '../hooks/use-auto-onboarding'
+import PololuMicropythonPanel from './pololu-micropython-panel'
 import WorkflowHeader from './workflow-header'
 import WorkflowPanel from './workflow-panel'
 
@@ -75,6 +77,9 @@ const WorkflowChildren = () => {
   const setShowOnboarding = useStore(s => s.setShowOnboarding)
   const setHasSelectedStartNode = useStore(s => s.setHasSelectedStartNode)
   const setShouldAutoOpenStartNodeSelector = useStore(s => s.setShouldAutoOpenStartNodeSelector)
+  const isPololuProject = !!useStore(s => s.pololuMicropython?.enabled)
+  const showPololuMicropythonPanel = useStore(s => !!s.showPololuMicropythonPanel)
+  const setShowPololuMicropythonPanel = useStore(s => s.setShowPololuMicropythonPanel)
   const reactFlowStore = useStoreApi()
   const availableNodesMetaData = useAvailableNodesMetaData()
   const { handleSyncWorkflowDraft } = useNodesSyncDraft()
@@ -93,6 +98,11 @@ const WorkflowChildren = () => {
   })
 
   const autoGenerateWebhookUrl = useAutoGenerateWebhookUrl()
+
+  useEffect(() => {
+    if (!isPololuProject)
+      setShowPololuMicropythonPanel?.(false)
+  }, [isPololuProject, setShowPololuMicropythonPanel])
 
   const handleCloseOnboarding = useCallback(() => {
     handleOnboardingClose()
@@ -189,6 +199,7 @@ const WorkflowChildren = () => {
       }
       <WorkflowHeader />
       <WorkflowPanel />
+      {isPololuProject && showPololuMicropythonPanel && <PololuMicropythonPanel />}
     </>
   )
 }

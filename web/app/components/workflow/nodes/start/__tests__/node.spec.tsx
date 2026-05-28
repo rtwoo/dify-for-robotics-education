@@ -54,5 +54,13 @@ describe('StartNode', () => {
 
       expect(container).toBeEmptyDOMElement()
     })
+
+    it('should render nothing when legacy start data has no variables field', () => {
+      const { container } = renderNodeComponent(Node, createNodeData({
+        variables: undefined as unknown as StartNodeType['variables'],
+      }))
+
+      expect(container).toBeEmptyDOMElement()
+    })
   })
 })

@@ -60,6 +60,7 @@ export const useWorkflowInit = () => {
       const res = await fetchWorkflowDraft(`/apps/${appDetail.id}/workflows/draft`)
       setData(res)
       workflowStore.setState({
+        pololuMicropython: res.features?.pololu_micropython,
         envSecrets: (res.environment_variables || []).filter(env => env.value_type === 'secret').reduce((acc, env) => {
           acc[env.id] = env.value
           return acc

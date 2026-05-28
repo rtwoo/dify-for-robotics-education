@@ -8,6 +8,9 @@ import WorkflowChildren from '../workflow-children'
 type WorkflowStoreState = {
   showFeaturesPanel: boolean
   showImportDSLModal: boolean
+  pololuMicropython?: Record<string, unknown>
+  showPololuMicropythonPanel: boolean
+  setShowPololuMicropythonPanel: (show: boolean) => void
   setShowImportDSLModal: (show: boolean) => void
   showOnboarding: boolean
   setShowOnboarding: (show: boolean) => void
@@ -35,6 +38,7 @@ const mockSetShowImportDSLModal = vi.fn()
 const mockSetShowOnboarding = vi.fn()
 const mockSetHasSelectedStartNode = vi.fn()
 const mockSetShouldAutoOpenStartNodeSelector = vi.fn()
+const mockSetShowPololuMicropythonPanel = vi.fn()
 const mockSetNodes = vi.fn()
 const mockSetEdges = vi.fn()
 const mockHandleSyncWorkflowDraft = vi.fn()
@@ -141,11 +145,30 @@ vi.mock('@/app/components/workflow/plugin-dependency', () => ({
 }))
 
 vi.mock('@/app/components/workflow-app/components/workflow-header', () => ({
-  default: () => <div data-testid="workflow-header">workflow-header</div>,
+  default: () => (
+    <div data-testid="workflow-header">
+      workflow-header
+      {Boolean(workflowStoreState.pololuMicropython?.enabled) && (
+        <button
+          type="button"
+          aria-pressed={workflowStoreState.showPololuMicropythonPanel}
+          onClick={() => workflowStoreState.setShowPololuMicropythonPanel(!workflowStoreState.showPololuMicropythonPanel)}
+        >
+          {workflowStoreState.showPololuMicropythonPanel
+            ? 'pololu.actions.hidePanel'
+            : 'pololu.actions.showPanel'}
+        </button>
+      )}
+    </div>
+  ),
 }))
 
 vi.mock('@/app/components/workflow-app/components/workflow-panel', () => ({
   default: () => <div data-testid="workflow-panel">workflow-panel</div>,
+}))
+
+vi.mock('@/app/components/workflow-app/components/pololu-micropython-panel', () => ({
+  default: () => <div data-testid="pololu-micropython-panel">pololu-micropython-panel</div>,
 }))
 
 vi.mock('@/next/dynamic', async () => {
@@ -288,6 +311,12 @@ describe('WorkflowChildren', () => {
     workflowStoreState = {
       showFeaturesPanel: false,
       showImportDSLModal: false,
+      pololuMicropython: undefined,
+      showPololuMicropythonPanel: false,
+      setShowPololuMicropythonPanel: (show: boolean) => {
+        workflowStoreState.showPololuMicropythonPanel = show
+        mockSetShowPololuMicropythonPanel(show)
+      },
       setShowImportDSLModal: mockSetShowImportDSLModal,
       showOnboarding: false,
       setShowOnboarding: mockSetShowOnboarding,
@@ -324,6 +353,19 @@ describe('WorkflowChildren', () => {
     expect(mockSetShowImportDSLModal).toHaveBeenCalledWith(false)
     expect(mockExportCheck).toHaveBeenCalled()
     expect(mockHandlePaneContextmenuCancel).toHaveBeenCalled()
+  })
+
+  it('should render the Pololu MicroPython panel for Pololu workflow projects when source code is open', () => {
+    workflowStoreState = {
+      ...workflowStoreState,
+      pololuMicropython: { enabled: true },
+      showPololuMicropythonPanel: true,
+    }
+
+    render(<WorkflowChildren />)
+
+    expect(screen.getByRole('button', { name: /pololu\.actions\.hidePanel/i })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByTestId('pololu-micropython-panel')).toBeInTheDocument()
   })
 
   it('should react to DSL export check events by showing the confirm modal and closing it', async () => {

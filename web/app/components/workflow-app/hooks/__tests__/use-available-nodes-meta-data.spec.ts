@@ -3,9 +3,16 @@ import { BlockEnum } from '@/app/components/workflow/types'
 import { useAvailableNodesMetaData } from '../use-available-nodes-meta-data'
 
 const mockUseIsChatMode = vi.fn()
+const mockWorkflowState = vi.hoisted(() => ({
+  pololuMicropython: undefined as Record<string, unknown> | undefined,
+}))
 
 vi.mock('@/app/components/workflow-app/hooks/use-is-chat-mode', () => ({
   useIsChatMode: () => mockUseIsChatMode(),
+}))
+
+vi.mock('@/app/components/workflow/store', () => ({
+  useStore: (selector: (state: typeof mockWorkflowState) => unknown) => selector(mockWorkflowState),
 }))
 
 vi.mock('@/context/i18n', () => ({
@@ -15,6 +22,7 @@ vi.mock('@/context/i18n', () => ({
 describe('useAvailableNodesMetaData', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockWorkflowState.pololuMicropython = undefined
   })
 
   it('should include chat-specific nodes and make the start node undeletable in chat mode', () => {
@@ -45,5 +53,19 @@ describe('useAvailableNodesMetaData', () => {
       type: BlockEnum.Start,
       title: 'workflow.blocks.start',
     })
+  })
+
+  it('should restrict the palette for Pololu MicroPython workflows', () => {
+    mockUseIsChatMode.mockReturnValue(false)
+    mockWorkflowState.pololuMicropython = { enabled: true }
+
+    const { result } = renderHook(() => useAvailableNodesMetaData())
+
+    expect(result.current.nodesMap?.[BlockEnum.PololuAction]).toBeDefined()
+    expect(result.current.nodesMap?.[BlockEnum.Start]).toBeDefined()
+    expect(result.current.nodesMap?.[BlockEnum.End]).toBeDefined()
+    expect(result.current.nodesMap?.[BlockEnum.LLM]).toBeUndefined()
+    expect(result.current.nodesMap?.[BlockEnum.TriggerWebhook]).toBeUndefined()
+    expect(result.current.nodesMap).not.toHaveProperty(BlockEnum.VariableAssigner)
   })
 })

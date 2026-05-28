@@ -224,6 +224,9 @@ export const initialNodes = (originNodes: Node[], originEdges: Edge[]) => {
     node.data._connectedSourceHandleIds = connectedEdges.filter(edge => edge.source === node.id).map(edge => edge.sourceHandle || 'source')
     node.data._connectedTargetHandleIds = connectedEdges.filter(edge => edge.target === node.id).map(edge => edge.targetHandle || 'target')
 
+    if (node.data.type === BlockEnum.Start)
+      (node.data as { variables?: unknown[] }).variables = (node.data as { variables?: unknown[] }).variables ?? []
+
     if (node.data.type === BlockEnum.IfElse) {
       const nodeData = node.data as IfElseNodeType
 

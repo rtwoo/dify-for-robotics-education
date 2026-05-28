@@ -1,0 +1,4 @@
+docker/volumes
+docker/volumes/**
+docker/volumes/db/data/pgdata
+docker/volumes/db/data/pgdata/**

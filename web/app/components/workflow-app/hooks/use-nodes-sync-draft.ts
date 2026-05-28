@@ -40,6 +40,7 @@ export const useNodesSyncDraft = () => {
       environmentVariables,
       syncWorkflowDraftHash,
       isWorkflowDataLoaded,
+      pololuMicropython,
     } = workflowStore.getState()
 
     if (!appId || !isWorkflowDataLoaded)
@@ -71,6 +72,7 @@ export const useNodesSyncDraft = () => {
       retriever_resource: features.citation,
       sensitive_word_avoidance: features.moderation,
       file_upload: features.file,
+      ...(pololuMicropython ? { pololu_micropython: pololuMicropython } : {}),
     }
 
     return {

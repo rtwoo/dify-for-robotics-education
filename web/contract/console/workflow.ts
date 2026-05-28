@@ -20,6 +20,7 @@ export type WorkflowDraftFeaturesPayload = {
   retriever_resource?: RetrieverResource
   sensitive_word_avoidance?: SensitiveWordAvoidance
   file_upload?: FileUpload
+  pololu_micropython?: Record<string, unknown>
 }
 
 export const workflowDraftEnvironmentVariablesContract = base

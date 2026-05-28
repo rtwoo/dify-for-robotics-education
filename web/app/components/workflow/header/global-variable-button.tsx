@@ -13,6 +13,7 @@ const GlobalVariableButton = ({ disabled }: { disabled: boolean }) => {
   const setShowEnvPanel = useStore(s => s.setShowEnvPanel)
   const setShowChatVariablePanel = useStore(s => s.setShowChatVariablePanel)
   const setShowDebugAndPreviewPanel = useStore(s => s.setShowDebugAndPreviewPanel)
+  const setShowPololuMicropythonPanel = useStore(s => s.setShowPololuMicropythonPanel)
   const { closeAllInputFieldPanels } = useInputFieldPanel()
 
   const handleClick = () => {
@@ -20,6 +21,7 @@ const GlobalVariableButton = ({ disabled }: { disabled: boolean }) => {
     setShowEnvPanel(false)
     setShowChatVariablePanel(false)
     setShowDebugAndPreviewPanel(false)
+    setShowPololuMicropythonPanel?.(false)
     closeAllInputFieldPanels()
   }
 

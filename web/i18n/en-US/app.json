@@ -192,6 +192,8 @@
   "newApp.noTemplateFound": "No templates found",
   "newApp.noTemplateFoundTip": "Try searching using different keywords.",
   "newApp.optional": "Optional",
+  "newApp.pololuMicropythonShortDescription": "Visual robot programs for Pololu 3pi+ 2040",
+  "newApp.pololuMicropythonUserDescription": "Build Pololu 3pi+ 2040 MicroPython programs as visual workflows with editable generated code.",
   "newApp.previewDemo": "Preview demo",
   "newApp.showTemplates": "I want to choose from a template",
   "newApp.startFromBlank": "Create from Blank",
@@ -299,5 +301,6 @@
   "types.basic": "Basic",
   "types.chatbot": "Chatbot",
   "types.completion": "Completion",
+  "types.pololuMicropython": "Pololu MicroPython",
   "types.workflow": "Workflow"
 }

@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest'
 import { DeliveryMethodType } from '@/app/components/workflow/nodes/human-input/types'
 import { BlockEnum, EditionType, PromptRole } from '@/app/components/workflow/types'
 import { AppModeEnum } from '@/types/app'
-import { getNodeUsedVars, updateNodeVars } from '../utils'
+import { getNodeUsedVars, toNodeOutputVars, updateNodeVars } from '../utils'
 
 const createNode = <T>(data: Node<T>['data']): Node<T> => ({
   id: 'node-1',
@@ -42,6 +42,18 @@ const createLLMNodeData = (promptTemplate: PromptItem[]): LLMNodeType => ({
 })
 
 describe('variable utils', () => {
+  describe('toNodeOutputVars', () => {
+    it('should ignore legacy start nodes without variables', () => {
+      const node = createNode({
+        type: BlockEnum.Start,
+        title: 'Start',
+        desc: '',
+      })
+
+      expect(toNodeOutputVars([node], false, undefined, [], [], [], {})).toEqual([])
+    })
+  })
+
   describe('getNodeUsedVars', () => {
     it('should read variables from llm jinja prompt text', () => {
       const node = createNode<LLMNodeType>(

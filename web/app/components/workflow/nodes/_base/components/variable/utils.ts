@@ -343,7 +343,7 @@ const formatItem = (
   }
   switch (data.type) {
     case BlockEnum.Start: {
-      const { variables } = data as StartNodeType
+      const variables = (data as StartNodeType).variables ?? []
       res.vars = variables.map((v) => {
         const type = inputVarTypeToVarType(v.type)
         const varRes: Var = {

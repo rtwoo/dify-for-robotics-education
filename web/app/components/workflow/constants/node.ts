@@ -17,6 +17,7 @@ import loopEndDefault from '@/app/components/workflow/nodes/loop-end/default'
 import loopStartDefault from '@/app/components/workflow/nodes/loop-start/default'
 import loopDefault from '@/app/components/workflow/nodes/loop/default'
 import parameterExtractorDefault from '@/app/components/workflow/nodes/parameter-extractor/default'
+import pololuActionDefault from '@/app/components/workflow/nodes/pololu-action/default'
 import questionClassifierDefault from '@/app/components/workflow/nodes/question-classifier/default'
 import templateTransformDefault from '@/app/components/workflow/nodes/template-transform/default'
 import toolDefault from '@/app/components/workflow/nodes/tool/default'
@@ -43,4 +44,8 @@ export const WORKFLOW_COMMON_NODES = [
   listOperatorDefault,
   toolDefault,
   humanInputDefault,
+]
+
+export const POLOLU_WORKFLOW_NODES = [
+  pololuActionDefault,
 ]

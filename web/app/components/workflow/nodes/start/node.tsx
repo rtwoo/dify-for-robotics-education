@@ -12,7 +12,7 @@ const Node: FC<NodeProps<StartNodeType>> = ({
   data,
 }) => {
   const { t } = useTranslation()
-  const { variables } = data
+  const variables = data.variables ?? []
 
   if (!variables.length)
     return null

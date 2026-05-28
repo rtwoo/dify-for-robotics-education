@@ -11,6 +11,7 @@ import { useResetWorkflowVersionHistory } from '@/service/use-workflow'
 import { useIsChatMode } from '../../hooks'
 import ChatVariableTrigger from './chat-variable-trigger'
 import FeaturesTrigger from './features-trigger'
+import PololuSourceCodeTrigger from './pololu-source-code-trigger'
 
 const WorkflowHeader = () => {
   const { appDetail, setCurrentLogItem, setShowMessageLogModal } = useAppStore(useShallow(state => ({
@@ -39,6 +40,7 @@ const WorkflowHeader = () => {
         components: {
           middle: <FeaturesTrigger />,
           chatVariableTrigger: <ChatVariableTrigger />,
+          pololuSourceCodeTrigger: <PololuSourceCodeTrigger />,
         },
         runAndHistoryProps: {
           showRunButton: !isChatMode,

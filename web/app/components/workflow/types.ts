@@ -56,6 +56,7 @@ export enum BlockEnum {
   TriggerSchedule = 'trigger-schedule',
   TriggerWebhook = 'trigger-webhook',
   TriggerPlugin = 'trigger-plugin',
+  PololuAction = 'pololu-action',
 }
 
 export enum ControlMode {

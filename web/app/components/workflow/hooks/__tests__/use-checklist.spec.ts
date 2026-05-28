@@ -277,6 +277,18 @@ describe('useChecklist', () => {
     expect(requiredItem!.canNavigate).toBe(false)
   })
 
+  it('should ignore empty node metadata entries when checking required node types', () => {
+    mockNodesMap[BlockEnum.VariableAssigner] = undefined as unknown as typeof mockNodesMap[string]
+
+    const { nodes, edges } = buildConnectedGraph()
+
+    const { result } = renderWorkflowHook(
+      () => useChecklist(nodes, edges),
+    )
+
+    expect(result.current).toEqual([])
+  })
+
   it('should not flag start nodes as unconnected', () => {
     const startNode = createNode({ id: 'start', data: { type: BlockEnum.Start, title: 'Start' } })
     const codeNode = createNode({ id: 'code', data: { type: BlockEnum.Code, title: 'Code' } })

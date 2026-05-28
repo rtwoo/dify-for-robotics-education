@@ -90,6 +90,9 @@ const WorkflowMain = ({
       conversation_variables,
       environment_variables,
     } = payload
+    workflowStore.setState({
+      pololuMicropython: features?.pololu_micropython,
+    })
     if (features && featuresStore) {
       const { setFeatures } = featuresStore.getState()
 

@@ -8,6 +8,8 @@ describe('createWorkflowSlice', () => {
 
     expect(state.appId).toBe('')
     expect(state.appName).toBe('')
+    expect(state.pololuMicropython).toBeUndefined()
+    expect(state.showPololuMicropythonPanel).toBe(false)
     expect(state.notInitialWorkflow).toBe(false)
     expect(state.shouldAutoOpenStartNodeSelector).toBe(false)
     expect(state.nodesDefaultConfigs).toEqual({})
@@ -24,6 +26,8 @@ describe('createWorkflowSlice', () => {
       appName: 'Workflow App',
     })
     store.getState().setNotInitialWorkflow(true)
+    store.getState().setPololuMicropython({ enabled: true })
+    store.getState().setShowPololuMicropythonPanel(true)
     store.getState().setShouldAutoOpenStartNodeSelector(true)
     store.getState().setNodesDefaultConfigs({ start: { title: 'Start' } })
     store.getState().setShowOnboarding(true)
@@ -33,6 +37,8 @@ describe('createWorkflowSlice', () => {
     expect(store.getState()).toMatchObject({
       appId: 'app-1',
       appName: 'Workflow App',
+      pololuMicropython: { enabled: true },
+      showPololuMicropythonPanel: true,
       notInitialWorkflow: true,
       shouldAutoOpenStartNodeSelector: true,
       nodesDefaultConfigs: { start: { title: 'Start' } },

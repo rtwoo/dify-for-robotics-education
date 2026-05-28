@@ -74,6 +74,7 @@ const DEFAULT_ICON_MAP: Record<BlockEnum, React.ComponentType<{ className: strin
   [BlockEnum.TriggerWebhook]: WebhookLine,
   [BlockEnum.TriggerPlugin]: VariableX,
   [BlockEnum.HumanInput]: HumanInLoop,
+  [BlockEnum.PololuAction]: Code,
 }
 
 const getIcon = (type: BlockEnum, className: string) => {
@@ -122,6 +123,7 @@ const ICON_CONTAINER_BG_COLOR_MAP: Record<string, string> = {
   [BlockEnum.TriggerSchedule]: 'bg-util-colors-violet-violet-500',
   [BlockEnum.TriggerWebhook]: 'bg-util-colors-blue-blue-500',
   [BlockEnum.TriggerPlugin]: 'bg-util-colors-blue-blue-500',
+  [BlockEnum.PololuAction]: 'bg-util-colors-green-green-500',
 }
 const BlockIcon: FC<BlockIconProps> = ({
   type,

@@ -12,12 +12,14 @@ const ChatVariableButton = ({ disabled }: { disabled: boolean }) => {
   const setShowEnvPanel = useStore(s => s.setShowEnvPanel)
   const setShowGlobalVariablePanel = useStore(s => s.setShowGlobalVariablePanel)
   const setShowDebugAndPreviewPanel = useStore(s => s.setShowDebugAndPreviewPanel)
+  const setShowPololuMicropythonPanel = useStore(s => s.setShowPololuMicropythonPanel)
 
   const handleClick = () => {
     setShowChatVariablePanel(true)
     setShowEnvPanel(false)
     setShowGlobalVariablePanel(false)
     setShowDebugAndPreviewPanel(false)
+    setShowPololuMicropythonPanel?.(false)
   }
 
   return (

@@ -34,6 +34,8 @@ import LoopNode from './loop/node'
 import LoopPanel from './loop/panel'
 import ParameterExtractorNode from './parameter-extractor/node'
 import ParameterExtractorPanel from './parameter-extractor/panel'
+import PololuActionNode from './pololu-action/node'
+import PololuActionPanel from './pololu-action/panel'
 import QuestionClassifierNode from './question-classifier/node'
 import QuestionClassifierPanel from './question-classifier/panel'
 import StartNode from './start/node'
@@ -78,6 +80,7 @@ export const NodeComponentMap: Record<string, ComponentType<any>> = {
   [BlockEnum.TriggerSchedule]: TriggerScheduleNode,
   [BlockEnum.TriggerWebhook]: TriggerWebhookNode,
   [BlockEnum.TriggerPlugin]: TriggerPluginNode,
+  [BlockEnum.PololuAction]: PololuActionNode,
 }
 
 export const PanelComponentMap: Record<string, ComponentType<any>> = {
@@ -107,4 +110,5 @@ export const PanelComponentMap: Record<string, ComponentType<any>> = {
   [BlockEnum.TriggerSchedule]: TriggerSchedulePanel,
   [BlockEnum.TriggerWebhook]: TriggerWebhookPanel,
   [BlockEnum.TriggerPlugin]: TriggerPluginPanel,
+  [BlockEnum.PololuAction]: PololuActionPanel,
 }
